@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#286b3b">
+<meta name="description" content="Aplicativo educacional sobre paleontologia da Quarta Colônia">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>Exploradores da Quarta Colônia</title>
+<style>
+:root{--green:#286b3b;--green2:#3a7d44;--orange:#e07b39;--cream:#efe7d8;--ink:#3b2f23;--muted:#6b5b45;--card:#fff;--line:#e5dac8}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;padding-bottom:82px}
+header{position:sticky;top:0;z-index:20;background:var(--green);color:#fff;padding:13px 16px;box-shadow:0 2px 10px #0003}
+header h1{margin:0;font-size:1.08rem}header .sub{font-size:.74rem;opacity:.9;margin-top:3px}
+.banner{background:var(--orange);color:#fff;text-align:center;padding:6px 10px;font-size:.7rem;font-weight:700}
+/* Splash premium */
+.splash{position:fixed;inset:0;z-index:100;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#071b17;color:#fff;isolation:isolate;transition:opacity .7s,visibility .7s}
+.splash.hide{opacity:0;visibility:hidden;pointer-events:none}
+.splash-scene{position:absolute;inset:0;z-index:-3;background:linear-gradient(180deg,#071a2b 0%,#173f4a 42%,#6d8d73 72%,#233b2b 100%)}
+.splash-scene:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 32%,#f9d99555 0 5%,transparent 26%),linear-gradient(180deg,transparent 48%,#08151099 100%)}
+.splash-mountains{position:absolute;left:-5%;right:-5%;bottom:17%;width:110%;height:55%;opacity:.9}
+.splash-stars{position:absolute;inset:0;background-image:radial-gradient(circle,#fff 1px,transparent 1.5px);background-size:74px 61px;opacity:.18;animation:stars 8s linear infinite}
+@keyframes stars{to{transform:translateY(18px)}}
+.splash-dino{position:absolute;bottom:14%;filter:drop-shadow(0 16px 8px #0007);transform-origin:center bottom}
+.splash-dino.left{left:3%;width:min(260px,42vw);animation:dinoLeft 5s ease-in-out infinite}
+.splash-dino.right{right:2%;width:min(300px,45vw);animation:dinoRight 5.7s ease-in-out .4s infinite}
+@keyframes dinoLeft{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-12px) rotate(2deg)}}
+@keyframes dinoRight{0%,100%{transform:translateY(0) rotate(2deg)}50%{transform:translateY(-16px) rotate(-2deg)}}
+.splash-content{position:relative;width:min(520px,92vw);text-align:center;padding:24px 20px 20px;border:1px solid #ffffff35;border-radius:32px;background:linear-gradient(145deg,#ffffff1f,#ffffff08);backdrop-filter:blur(13px);box-shadow:0 30px 80px #0008, inset 0 1px #ffffff40;animation:cardIn 1s cubic-bezier(.2,.8,.2,1) both}
+@keyframes cardIn{from{opacity:0;transform:translateY(28px) scale(.96)}to{opacity:1;transform:none}}
+.splash-brand{font-size:.67rem;letter-spacing:.18em;text-transform:uppercase;font-weight:900;color:#f5dfab;margin-bottom:8px}
+.splash-logo-wrap{position:relative;width:min(270px,65vw);height:180px;margin:0 auto 8px;display:grid;place-items:center}
+.splash-logo-wrap:before{content:"";position:absolute;width:150px;height:150px;border-radius:50%;background:#fff;box-shadow:0 0 0 9px #ffffff20,0 0 45px #f7df9b55;animation:logoGlow 2.6s ease-in-out infinite}
+@keyframes logoGlow{50%{transform:scale(1.05);box-shadow:0 0 0 14px #ffffff16,0 0 70px #f7df9b77}}
+.splash-logo{position:relative;width:min(250px,62vw);max-height:170px;object-fit:contain;display:block;animation:logoIn 1.2s .2s cubic-bezier(.17,.84,.44,1) both}
+@keyframes logoIn{from{opacity:0;transform:scale(.55) rotate(-7deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+.splash-title{color:#fff;font-size:clamp(1.65rem,5vw,2.35rem);font-weight:950;line-height:1.02;text-shadow:0 4px 20px #0008;margin:2px 0 8px;letter-spacing:-.04em}
+.splash-sub{color:#e8eee7;font-size:.82rem;line-height:1.5;margin:0 auto 16px;max-width:400px}
+.splash-actions{display:flex;gap:9px;justify-content:center;align-items:center}
+.splash-enter{width:auto;min-width:220px;margin:0;background:linear-gradient(135deg,#ef8a42,#d95f27);box-shadow:0 10px 25px #d95f2766;transition:transform .2s,box-shadow .2s}
+.splash-enter:hover{transform:translateY(-2px);box-shadow:0 14px 32px #d95f2780}
+.sound-btn{border:1px solid #ffffff45;background:#ffffff18;color:#fff;border-radius:14px;width:48px;height:48px;font-size:1.1rem;cursor:pointer;backdrop-filter:blur(8px)}
+.splash-seal{font-size:.62rem;color:#dbe6da;margin-top:13px;letter-spacing:.04em}
+.splash-credit{font-size:.54rem;color:#ffffff88;margin-top:5px}
+@media(max-width:560px){.splash-content{padding:18px 14px 15px}.splash-logo-wrap{height:150px}.splash-logo-wrap:before{width:125px;height:125px}.splash-logo{max-height:140px}.splash-dino.left{left:-13%;bottom:10%}.splash-dino.right{right:-14%;bottom:9%}.splash-mountains{bottom:14%;height:48%}.splash-sub{font-size:.75rem}.splash-actions{gap:7px}.splash-enter{min-width:0;flex:1}}
+.screen{display:none;max-width:820px;margin:auto;padding:14px}.screen.active{display:block}
+.card{background:var(--card);border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 2px 10px #00000012}
+.hero{background:linear-gradient(135deg,#285f35,#4d8a4d);color:#fff;border-radius:20px;padding:20px;margin-bottom:14px}
+.hero h2{color:#fff;margin:0 0 7px;font-size:1.45rem}.hero p{font-size:.82rem}
+h2{color:#245b32;margin:2px 0 10px;font-size:1.18rem}h3{color:#2c5f34}
+.tag,.pill{display:inline-block;padding:5px 9px;border-radius:99px;background:#f4ead9;font-size:.67rem;font-weight:800;margin:3px}
+.btn{border:0;border-radius:13px;padding:12px 16px;font-size:.95rem;font-weight:800;cursor:pointer;width:100%;margin-top:8px;font-family:inherit}
+.orange{background:var(--orange);color:#fff}.green{background:var(--green2);color:#fff}.gray{background:#d8cdb8;color:var(--ink)}.blue{background:#4b80b5;color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:10px}
+.pick{background:#f7f1e3;border:3px solid transparent;border-radius:14px;padding:11px 5px;text-align:center;cursor:pointer;font-size:1.55rem}.pick small{display:block;font-size:.67rem;color:var(--muted);font-weight:800}.pick.sel{border-color:var(--orange);background:#fdeada}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.fact{background:#f7f1e3;border-radius:12px;padding:10px;text-align:center}.fact b{font-size:1.05rem;color:#2c5f34;display:block}.fact small{font-size:.62rem;color:var(--muted)}
+.place{border:1px solid var(--line);border-radius:14px;padding:12px;margin:9px 0;background:#fffdf9;cursor:pointer}.place h3{margin:0 0 4px;font-size:.94rem}.place p{margin:3px 0;font-size:.76rem;color:var(--muted)}
+.filters{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0}.filter{border:0;border-radius:20px;padding:7px 10px;background:#eee4d3;font-weight:800;font-size:.7rem;cursor:pointer}.filter.on{background:var(--green2);color:#fff}
+.map{background:#dcead9;border-radius:15px;padding:8px;overflow:hidden}.map svg{width:100%;display:block}.legend{display:flex;flex-wrap:wrap;gap:5px 12px;font-size:.65rem;color:var(--muted);font-weight:700;margin-top:7px}
+.info{background:#edf6ed;border-left:5px solid var(--green2);border-radius:10px;padding:12px;font-size:.78rem;margin-top:10px}.notice{background:#fff4dc;border-left:5px solid var(--orange);padding:10px;border-radius:10px;font-size:.74rem;margin:10px 0}
+label{font-weight:800;font-size:.8rem;display:block;margin:11px 0 4px}
+input[type=text],select,textarea{width:100%;padding:11px;border:2px solid #d8cdb8;border-radius:10px;font-size:.95rem;font-family:inherit;background:#fffdf8}textarea{min-height:85px;resize:vertical}
+#preview{max-width:100%;border-radius:12px;display:none;margin-top:8px}
+.fossil-card{background:#fff;border-radius:14px;padding:10px;box-shadow:0 2px 6px #00000010;position:relative}.fossil-card img{width:100%;height:120px;object-fit:cover;border-radius:10px}.sem-foto{height:120px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:#f7f1e3;border-radius:10px}.fossil-card h3{margin:7px 0 2px;font-size:.92rem}.fossil-card p{margin:2px 0;font-size:.68rem;color:var(--muted)}.del{position:absolute;top:6px;right:6px;border:0;border-radius:50%;width:28px;height:28px;background:#0009;color:#fff}
+.badge{display:inline-block;background:#f7f1e3;border-radius:14px;padding:10px;margin:4px;text-align:center;width:calc(50% - 10px);opacity:.42;filter:grayscale(.8)}.badge.ok{opacity:1;filter:none;background:#fdf0dd;border:2px solid var(--orange)}.badge .emo{font-size:1.9rem;display:block}.badge small{font-size:.65rem;font-weight:800;color:var(--muted)}
+.mission{padding:10px 0;border-bottom:1px dashed #d8cdb8;display:flex;gap:10px;align-items:center;font-size:.78rem}.mission b{font-size:1.15rem}.progress{height:9px;background:#e8dfd1;border-radius:99px;overflow:hidden;margin:8px 0}.progress span{display:block;height:100%;background:var(--orange);width:0;transition:.3s}
+.small{font-size:.68rem;color:#806f5b}.timeline{border-left:3px solid var(--orange);margin:10px 0 0 8px;padding-left:14px}.timeline div{margin:0 0 12px}.timeline b{color:#2c5f34}
+.activity{border:2px solid var(--line);border-radius:14px;padding:12px;margin:9px 0;background:#fffdf9}.choice{display:block;width:100%;text-align:left;border:1px solid #d8cdb8;background:#fff;padding:10px;border-radius:10px;margin:7px 0;font:inherit;cursor:pointer}.choice.correct{background:#e4f3e5;border-color:#3a7d44}.choice.wrong{background:#fde3d7;border-color:#d95f27}
+.modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;z-index:50;padding:18px}.modal .card{max-width:520px;width:100%;max-height:88vh;overflow:auto}.close{float:right;border:0;background:#eee;border-radius:50%;width:30px;height:30px;font-weight:800;cursor:pointer}
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;box-shadow:0 -2px 10px #0002;z-index:40;padding-bottom:env(safe-area-inset-bottom)}nav button{flex:1;border:0;background:none;padding:7px 2px;font-size:.56rem;font-weight:800;color:#8b7d66;cursor:pointer;font-family:inherit}nav .emo{display:block;font-size:1.25rem}nav .ativo{color:var(--orange)}
+#toast{position:fixed;bottom:94px;left:50%;transform:translateX(-50%);background:#245b32;color:#fff;padding:12px 16px;border-radius:28px;font-weight:800;display:none;z-index:70;max-width:90%;text-align:center;box-shadow:0 4px 14px #0004}
+hr{border:0;border-top:1px solid var(--line);margin:14px 0}
+@media(max-width:480px){.facts{grid-template-columns:1fr 1fr 1fr}.badge{width:calc(50% - 10px)}}
+</style>
+
+<style>
+body{background:radial-gradient(circle at 10% 0%,#d9f0e7 0,transparent 30%),linear-gradient(180deg,#f2faf6 0%,#fffaf1 55%,#f3e7d2 100%);color:#17352d}
+header{background:linear-gradient(135deg,#063b32,#147151 65%,#235f4b);padding:16px 18px;border-bottom:3px solid #e8b54b}
+header h1{font-size:1.28rem;letter-spacing:-.02em}.banner{background:#153f36;font-size:.68rem;letter-spacing:.02em}
+.screen{max-width:1050px;padding:24px 18px 105px}.hero{position:relative;overflow:hidden;min-height:390px;border-radius:30px;padding:30px;background:linear-gradient(135deg,#0a3c35,#23745b 58%,#8db478);box-shadow:0 20px 50px #103e342b}
+.hero:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 75% 18%,#ffe5a766 0 7%,transparent 25%),radial-gradient(circle at 20% 25%,#fff8 0 1px,transparent 2px);background-size:auto,62px 62px;opacity:.8}
+.hero:after{content:"🦖";position:absolute;right:6%;bottom:-20px;font-size:11rem;filter:drop-shadow(0 20px 8px #0005);animation:heroDino 4s ease-in-out infinite}
+@keyframes heroDino{50%{transform:translateY(-14px) rotate(2deg)}}
+.hero>*{position:relative;z-index:2}.hero h2{font-size:clamp(2rem,6vw,4rem);line-height:.95;margin:5px 0 12px;max-width:620px;text-shadow:0 5px 20px #0005}.hero p{font-size:1rem;max-width:610px;line-height:1.55}.tag{background:#ffffff20;border:1px solid #ffffff38;color:#fff;padding:7px 10px}
+.card{border:1px solid #e6dfd2;box-shadow:0 10px 30px #19382b0e;border-radius:20px;transition:transform .18s,box-shadow .18s}.card:hover{box-shadow:0 16px 35px #19382b16}
+.btn{box-shadow:0 8px 16px #163b2c12;transition:transform .16s,filter .16s}.btn:hover{transform:translateY(-2px);filter:brightness(1.03)}
+.map{background:linear-gradient(180deg,#d9f2f4,#e7f0d5 50%,#7ba56e);border-radius:24px;border:2px solid #dce5d8;box-shadow:inset 0 0 50px #174b3222}.map svg g{filter:drop-shadow(0 4px 3px #0003)}.map svg g:hover circle{stroke:#ffe28b;stroke-width:5}.place{transition:.18s;border:1px solid #e7dfd0}.place:hover{transform:translateY(-3px);box-shadow:0 9px 20px #17382b16}.place h3{font-size:1rem}.info{box-shadow:0 8px 20px #17382b10;border-left-width:6px}
+.activity{background:linear-gradient(145deg,#fff,#f8f4e9);border-radius:18px;padding:17px;transition:.18s}.activity:hover{transform:translateY(-3px);box-shadow:0 12px 25px #17382b15}.activity .btn{margin-top:8px}
+.pick{transition:.18s}.pick:hover{transform:translateY(-2px);box-shadow:0 7px 15px #17382b12}
+nav{background:#ffffffef;backdrop-filter:blur(15px);border-top:1px solid #ded7ca}nav button{padding-top:9px}nav .ativo{color:#167153}
+
+.map-real{position:relative;background:linear-gradient(180deg,#d9eef0 0%,#eef2d8 48%,#b7cf91 100%);border:2px solid #d7dfc9;border-radius:24px;overflow:hidden;box-shadow:inset 0 0 45px #315b3a18,0 10px 24px #17382b12}
+.map-real:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 16% 28%,#ffffff90 0 2%,transparent 12%),radial-gradient(circle at 78% 72%,#ffffff65 0 1.5%,transparent 13%),repeating-linear-gradient(155deg,transparent 0 28px,#ffffff18 29px 30px);mix-blend-mode:soft-light}
+.map-real svg{width:100%;display:block;position:relative;z-index:1;font-family:inherit}
+.map-real .map-bg{fill:#dce9bd;stroke:#75935f;stroke-width:3}
+.map-real .map-muni{fill:#eef3d5;fill-opacity:.78;stroke:#6f805e;stroke-width:2.4;stroke-linejoin:round}
+.map-real .map-muni:nth-of-type(2n){fill:#e7efd0}.map-real .map-muni:nth-of-type(3n){fill:#f3f0d7}.map-real .map-muni:hover{fill:#f9df9c;stroke:#a66d34;stroke-width:3}
+.map-real .map-river{fill:none;stroke:#5aa7c4;stroke-width:7;stroke-linecap:round;opacity:.72}.map-real .map-river.secondary{stroke-width:3.5;opacity:.6}
+.map-real .map-road{fill:none;stroke:#c99a58;stroke-width:3;stroke-dasharray:8 7;opacity:.72}.map-real .map-road.main{stroke:#a8793f;stroke-width:4}
+.map-real .map-label text{font-size:11px;font-weight:900;fill:#31523b;paint-order:stroke;stroke:#f7f4dd;stroke-width:4px;stroke-linejoin:round}.map-real .map-label .city{font-size:10px}
+.map-real .map-marker{cursor:pointer;transition:transform .15s}.map-real .map-marker:hover{filter:drop-shadow(0 4px 5px #0005)}.map-real .map-marker circle{stroke:#fff;stroke-width:3}.map-real .map-marker text{font-size:13px}.map-real .map-compass{font-size:12px;font-weight:900;fill:#31523b}.map-real .map-scale{font-size:10px;font-weight:800;fill:#31523b}.map-real .map-terrain{fill:#7ea56d;opacity:.18}.map-real .map-hill{fill:#688e61;opacity:.22}
+</style>
+</head>
+<body>
+<div class="splash" id="splash" aria-label="Tela inicial">
+  <div class="splash-scene" aria-hidden="true">
+    <div class="splash-stars"></div>
+    <svg class="splash-mountains" viewBox="0 0 1200 500" preserveAspectRatio="none">
+      <path d="M0 390L170 245 285 350 470 150 650 335 790 205 970 355 1090 235 1200 320V500H0Z" fill="#183b32"/>
+      <path d="M0 425L210 315 365 405 555 265 745 405 910 300 1200 415V500H0Z" fill="#102820"/>
+      <path d="M455 152l16 28 23-12 18 32-42-10-21 28-20-34z" fill="#d9e4cf" opacity=".7"/>
+    </svg>
+  </div>
+
+  <svg class="splash-dino left" viewBox="0 0 300 230" aria-hidden="true">
+    <!-- Buriolestes-inspired small early sauropodomorph: long tail, small head, bipedal -->
+    <path d="M62 170 C105 130 125 94 169 88 C205 83 229 96 237 113 C243 126 236 139 222 141 C208 143 197 133 199 121 C183 114 167 119 159 135 L151 164 C145 183 129 190 108 186 L78 181Z" fill="#4e7850"/>
+    <path d="M169 89 C171 59 190 37 221 39 C239 40 252 49 260 61 L247 69 232 62 225 76 244 84 236 98 212 90 196 111Z" fill="#67965e"/>
+    <path d="M70 167 C45 145 30 119 36 91 C40 73 52 62 67 59" fill="none" stroke="#3e6643" stroke-width="13" stroke-linecap="round"/>
+    <circle cx="239" cy="54" r="4" fill="#f7d56b"/><path d="M259 67l31 5-28 8z" fill="#d98b4a"/>
+    <path d="M109 171 L101 216 M145 160 L152 211" stroke="#365d3d" stroke-width="11" stroke-linecap="round"/>
+    <path d="M101 214 l-18 8 m18-8 l14 7 M152 210 l-17 11 m17-11 l17 5" stroke="#365d3d" stroke-width="7" stroke-linecap="round"/>
+    <path d="M175 137 l-13 25 M194 139 l-10 25" stroke="#365d3d" stroke-width="6" stroke-linecap="round"/>
+  </svg>
+  <svg class="splash-dino right" viewBox="0 0 320 240" aria-hidden="true">
+    <!-- Gnathovorax-inspired herrerasaurid: robust biped, deep skull, long tail -->
+    <path d="M83 177 C106 142 119 105 157 91 C192 78 225 88 241 109 C251 122 247 140 232 146 C216 152 201 141 202 127 C186 119 171 126 164 143 L159 177 C153 195 132 204 111 195 L89 187Z" fill="#76523b"/>
+    <path d="M158 93 C157 60 176 31 208 27 C236 24 257 39 270 60 L255 69 239 57 227 72 249 83 238 100 211 88 190 111Z" fill="#986a49"/>
+    <path d="M94 178 C60 159 34 137 26 105 C22 89 26 76 38 69" fill="none" stroke="#624531" stroke-width="15" stroke-linecap="round"/>
+    <circle cx="245" cy="48" r="4.5" fill="#f7d56b"/><path d="M269 64l38 6-35 10z" fill="#c77d4d"/>
+    <path d="M121 179 L112 225 M157 171 L167 225" stroke="#5b3e2c" stroke-width="13" stroke-linecap="round"/>
+    <path d="M112 223 l-20 9 m20-9 l16 8 M167 223 l-18 10 m18-10 l20 5" stroke="#5b3e2c" stroke-width="8" stroke-linecap="round"/>
+    <path d="M181 143 l-16 30 M205 144 l-11 28" stroke="#5b3e2c" stroke-width="7" stroke-linecap="round"/>
+  </svg>
+
+  <div class="splash-content">
+    <div class="splash-brand">Uma jornada pelo Triássico brasileiro</div>
+    <div class="splash-logo-wrap">
+      <img class="splash-logo" src="https://saojoaodopolesine.rs.gov.br/Content/Img/programa/geo-2023.png" alt="Logotipo oficial do Geoparque Quarta Colônia" onerror="this.style.display='none';document.getElementById('logoFallback').style.display='block'">
+      <div id="logoFallback" style="display:none;position:relative;font-size:4rem">🌎</div>
+    </div>
+    <div class="splash-title">Exploradores da<br>Quarta Colônia</div>
+    <div class="splash-sub">Descubra fósseis, paisagens e histórias que ajudam a contar a vida na Terra há milhões de anos.</div>
+    <div class="splash-actions">
+      <button class="btn splash-enter" onclick="entrarApp()">🚀 Entrar na expedição</button>
+      <button id="installBtn" class="btn" style="display:none;margin-top:8px;background:#ffffff18;color:#fff;border:1px solid #ffffff45" onclick="instalar()">📲 Instalar aplicativo</button>
+      <button class="sound-btn" id="soundBtn" onclick="toggleSom(event)" aria-label="Ativar música de entrada">🔇</button>
+    </div>
+    <div class="splash-seal">Geoparque Quarta Colônia · UNESCO Global Geopark</div>
+    <div class="splash-credit">Experiência educativa • 2º ao 9º ano</div>
+  </div>
+</div>
+
+<div class="banner">🧪 EXPERIÊNCIA EDUCATIVA — funciona no navegador e pode ser instalado como PWA</div>
+<header><h1>🦴 Exploradores da Quarta Colônia</h1><div class="sub" id="status">Escolha seu modo de explorador 👇</div></header>
+
+<section class="screen active" id="inicio">
+<div class="hero"><h2>Viaje pelo Triássico!</h2><p>Explore a paleontologia da Quarta Colônia, conheça descobertas documentadas e monte seu próprio acervo.</p><span class="tag">🔎 Descoberta</span><span class="tag">🗺️ Geoparque</span><span class="tag">🦖 Paleontologia</span></div>
+<div class="card"><h2>👩‍🔬 Quem é você, explorador?</h2><div class="grid" id="avatars"></div></div>
+<div class="card"><h2>🎓 Escolha seu nível</h2><button class="btn orange" onclick="nivelEscolhido('mirim')">🐣 Caça-Fósseis <small>2º ao 5º ano</small></button><button class="btn green" onclick="nivelEscolhido('jovem')">🔬 Acervo Científico Jovem <small>6º ao 9º ano</small></button></div>
+<div class="card"><h2>🌎 O território</h2><div class="facts"><div class="fact"><b>9</b><small>municípios do Geoparque</small></div><div class="fact"><b>233–225 mi</b><small>anos das rochas destacadas pela UNESCO</small></div><div class="fact"><b>9</b><small>pontos de exploração no mapa</small></div></div></div>
+<div class="card"><h2>📱 Instalar no aparelho</h2><p class="small">Em navegadores compatíveis, use o menu do navegador e escolha “Instalar aplicativo” ou “Adicionar à tela inicial”.</p><button class="btn gray" onclick="instalar()">📲 Instalar aplicativo</button></div>
+</section>
+
+<section class="screen" id="mapa">
+<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h2 style="margin-bottom:4px">🗺️ Mapa de descobertas</h2><span class="tag" style="background:#eaf4ea;color:#286b3b">9 pontos</span></div><p class="small">Toque em um ícone para abrir a ficha. O desenho reproduz a disposição regional dos municípios de forma didática; os pontos de descoberta usam coordenadas publicadas quando disponíveis.</p>
+<div class="map-real"><svg viewBox="0 0 560 390" aria-label="Mapa didático da Quarta Colônia com municípios, rios, estradas e pontos de interesse"><title>Quarta Colônia — mapa territorial didático</title>
+<rect class="map-bg" x="8" y="8" width="544" height="374" rx="22"/>
+<!-- relevo estilizado da Serra Geral e áreas de vale -->
+<path class="map-terrain" d="M20 75 Q90 25 160 70 T310 58 T540 90 L540 150 Q440 125 355 150 T175 132 T20 160Z"/>
+<path class="map-hill" d="M15 235 Q85 185 145 225 T285 210 T420 225 T550 205 L550 280 Q450 260 350 285 T180 275 T15 300Z"/>
+<!-- hidrografia -->
+<path class="map-river" d="M18 96 C105 120 132 152 195 160 S305 168 365 205 S450 286 540 342"/>
+<path class="map-river secondary" d="M78 30 C120 78 115 115 148 145 S180 225 165 305"/>
+<path class="map-river secondary" d="M260 18 C255 70 280 105 310 132 S352 195 355 265"/>
+<!-- estradas principais -->
+<path class="map-road main" d="M35 325 C120 280 185 235 270 192 S405 120 520 55"/>
+<path class="map-road" d="M55 110 C155 135 235 146 320 140 S425 112 515 100"/>
+<!-- limites municipais: desenho didático inspirado na disposição regional -->
+<path class="map-muni" d="M326 34 L463 31 L516 77 L497 139 L392 147 L336 116Z"/>
+<path class="map-muni" d="M232 40 L326 34 L336 116 L283 151 L221 119Z"/>
+<path class="map-muni" d="M121 69 L221 119 L204 190 L113 185 L72 126Z"/>
+<path class="map-muni" d="M72 126 L113 185 L108 258 L50 245 L28 176Z"/>
+<path class="map-muni" d="M113 185 L204 190 L235 265 L180 314 L104 258Z"/>
+<path class="map-muni" d="M204 190 L300 168 L337 239 L235 265Z"/>
+<path class="map-muni" d="M235 265 L337 239 L391 309 L301 365 L180 314Z"/>
+<path class="map-muni" d="M300 168 L392 147 L451 204 L391 260 L337 239Z"/>
+<path class="map-muni" d="M392 147 L497 139 L531 204 L451 204Z"/>
+<!-- nomes dos municípios -->
+<g class="map-label" text-anchor="middle">
+<text x="405" y="68">Pinhal Grande</text><text x="278" y="72">Nova Palma</text>
+<text x="158" y="111">Dona Francisca</text><text x="57" y="166">Silveira Martins</text>
+<text x="146" y="225">Ivorá</text><text x="270" y="214">São João do Polêsine</text>
+<text x="414" y="177">Faxinal do Soturno</text><text x="246" y="315">Restinga Sêca</text><text x="312" y="349">Agudo</text>
+</g>
+<!-- rosa dos ventos e escala -->
+<g transform="translate(505 315)" class="map-compass"><circle r="24" fill="#ffffffaa" stroke="#6f805e" stroke-width="1.5"/><path d="M0-19 L5 4 0 1-5 4Z" fill="#31523b"/><path d="M0 19 L-5-4 0-1 5-4Z" fill="#d95f27"/><text x="0" y="-27" text-anchor="middle">N</text></g>
+<g transform="translate(30 350)" class="map-scale"><path d="M0 0H70" stroke="#31523b" stroke-width="3"/><path d="M0-4V4M35-4V4M70-4V4" stroke="#31523b" stroke-width="2"/><text x="0" y="15">0</text><text x="32" y="15">5 km</text><text x="62" y="15">10 km</text></g>
+<!-- pontos de exploração -->
+<g class="map-marker" onclick="ponto('buriol')"><circle cx="291" cy="132" r="13" fill="#d95f27"/><text x="291" y="137" text-anchor="middle">🦖</text></g>
+<g class="map-marker" onclick="ponto('cappa')"><circle cx="305" cy="153" r="13" fill="#347b45"/><text x="305" y="158" text-anchor="middle">🏛️</text></g>
+<g class="map-marker" onclick="ponto('linhasaoluiz')"><circle cx="409" cy="162" r="13" fill="#d95f27"/><text x="409" y="167" text-anchor="middle">🦴</text></g>
+<g class="map-marker" onclick="ponto('niemeyer')"><circle cx="344" cy="285" r="13" fill="#d95f27"/><text x="344" y="290" text-anchor="middle">🦎</text></g>
+<g class="map-marker" onclick="ponto('mata')"><circle cx="38" cy="330" r="13" fill="#4b80b5"/><text x="38" y="335" text-anchor="middle">🌲</text></g>
+<g class="map-marker" onclick="ponto('ale_moa')"><circle cx="208" cy="335" r="13" fill="#8b8b8b"/><text x="208" y="340" text-anchor="middle">🥇</text></g>
+<g class="map-marker" onclick="ponto('passo')"><circle cx="185" cy="305" r="13" fill="#d95f27"/><text x="185" y="310" text-anchor="middle">🌿</text></g>
+<g class="map-marker" onclick="ponto('piche')"><circle cx="287" cy="139" r="12" fill="#d95f27"/><text x="287" y="144" text-anchor="middle">🦴</text></g>
+<g class="map-marker" onclick="ponto('morro_agudo')"><circle cx="327" cy="260" r="12" fill="#8b6b45"/><text x="327" y="265" text-anchor="middle">⛰️</text></g>
+</svg></div><div class="legend"><span>🟠 Local fossilífero</span><span>🟢 Pesquisa e acervo</span><span>🔵 Patrimônio natural</span><span>🟤 Região paleontológica</span></div><div id="info" class="info" style="display:none"></div></div>
+<div class="card"><h2>📍 Locais e instituições no território</h2><div class="filters" id="filtros"></div><div id="locais"></div></div>
+</section>
+
+<section class="screen" id="registro">
+<div class="card"><h2>➕ Registrar uma descoberta</h2><label>📷 Foto</label><input type="file" id="foto" accept="image/*" onchange="fotoPreview(event)"><img id="preview">
+<label>Apelido da descoberta *</label><input type="text" id="nome" maxlength="60" placeholder="Ex.: Dentão, Pedra Curiosa...">
+<label>Onde foi encontrada?</label><select id="localSelect"></select>
+<div id="mirim"><label>Com o que parece?</label><div class="grid" id="tipos"></div></div>
+<div id="jovem" style="display:none"><label>Grupo/táxon</label><input type="text" id="taxon" maxlength="60" placeholder="Ex.: dinossauro, cinodonte..."><label>Período</label><select id="periodo"><option>Triássico</option><option>Permiano</option><option>Quaternário</option><option>Não sei ainda</option></select></div>
+<label>O que você observou?</label><textarea id="descricao" maxlength="500" placeholder="Cor, tamanho, formato, lugar, textura..."></textarea>
+<button class="btn orange" onclick="salvar()">💾 Salvar no meu acervo</button>
+</div><div class="notice">⚠️ Este recurso é educativo. Não retire fósseis do solo. Em atividades reais, siga a orientação de instituições e órgãos responsáveis pelo patrimônio fossilífero.</div>
+</section>
+
+<section class="screen" id="acervo"><div class="card"><h2>📖 Meu acervo (<span id="total">0</span>)</h2><div class="grid" id="lista"></div><p id="vazio" class="small" style="text-align:center;padding:20px">Nenhum registro ainda.</p></div></section>
+
+<section class="screen" id="missoes">
+<div class="card"><h2>🏆 Minhas insígnias</h2><div id="badges"></div></div>
+<div class="card"><h2>🎯 Missões</h2><div class="mission"><b id="m1">⬜</b>Faça seu primeiro registro</div><div class="mission"><b id="m2">⬜</b>Registre 3 tipos diferentes</div><div class="mission"><b id="m3">⬜</b>Explore 3 locais do mapa</div><div class="mission"><b id="m4">⬜</b>Escreva uma descrição com 20 palavras</div><div class="progress"><span id="bar"></span></div></div>
+<div class="card"><div class="quiz-head"><h2 style="margin:0">🧠 Quiz do explorador</h2><div class="quiz-score" id="quizScore">0 pontos</div></div><p class="small">Responda perguntas de múltipla escolha. A dificuldade aumenta conforme você avança.</p><div class="quiz-levels"><button id="qf" onclick="selecionarQuizNivel('facil')">Fácil · 2º–3º</button><button id="qm" onclick="selecionarQuizNivel('medio')">Médio · 4º–5º</button><button id="qd" onclick="selecionarQuizNivel('desafio')">Desafio · 6º–9º</button></div><div class="quiz-progress"><span id="quizBar"></span></div><div id="quizBox"></div></div>
+<div class="card"><h2>🎒 Novas atividades</h2><div class="activity"><b>1. 🔎 Detetive do fóssil</b><p class="small">Resolva três pistas e descubra qual evidência do passado está sendo descrita.</p><button class="btn orange" onclick="atividadeDetetive()">Começar</button></div><div class="activity"><b>2. ⏳ Linha do tempo</b><p class="small">Organize os períodos do Mesozoico do mais antigo para o mais recente.</p><button class="btn green" onclick="atividadeTempo()">Começar</button></div><div class="activity"><b>3. 🏛️ Curador mirim</b><p class="small">Escolha uma descoberta do seu acervo e monte uma ficha de exposição.</p><button class="btn gray" onclick="atividadeCurador()">Começar</button></div></div>
+</section>
+
+<nav>
+<button class="ativo" onclick="ir('inicio',this)"><span class="emo">🏠</span>Início</button>
+<button onclick="ir('mapa',this)"><span class="emo">🗺️</span>Mapa</button>
+<button onclick="ir('registro',this)"><span class="emo">➕</span>Registrar</button>
+<button onclick="ir('acervo',this)"><span class="emo">📖</span>Acervo</button>
+<button onclick="ir('missoes',this)"><span class="emo">🏆</span>Missões</button>
+</nav>
+<div id="toast"></div>
+<div class="modal" id="modal"><div class="card"><button class="close" onclick="fechar()">×</button><h2 id="mtitulo"></h2><div id="mtexto"></div><button class="btn gray" onclick="fechar()">Fechar</button></div></div>
+
+<script>
+const locais=[
+{id:'buriol',cat:'fossil',nome:'Sítio Buriol — São João do Polêsine',titulo:'🦖 Sítio Buriol / Venetoraptor',texto:'Localidade fossilífera em São João do Polêsine onde foram encontrados fósseis importantes para o estudo dos vertebrados do Triássico, incluindo Buriolestes e o Venetoraptor.',extra:'Coordenada publicada para o afloramento do Buriol: 29°39′34,2″ S; 53°25′47,4″ W. A visita a áreas fossilíferas deve respeitar as orientações dos responsáveis pelo patrimônio.',fonte:'UFSM/CAPPA e literatura científica',lat:-29.6595,lng:-53.4298},
+{id:'cappa',cat:'museu',nome:'CAPPA/UFSM — São João do Polêsine',titulo:'🏛️ CAPPA/UFSM',texto:'Centro da UFSM dedicado à pesquisa, conservação, preparação e divulgação do patrimônio paleontológico da Quarta Colônia.',extra:'A sede está em São João do Polêsine e mantém infraestrutura de pesquisa, preparação, reserva técnica e divulgação científica.',fonte:'UFSM/CAPPA',lat:-29.60994905,lng:-53.4466915},
+{id:'linhasaoluiz',cat:'fossil',nome:'Geossítio Linha São Luiz — Faxinal do Soturno',titulo:'🦴 Linha São Luiz',texto:'Geossítio fossilífero de relevância nacional em Faxinal do Soturno, com registros de vertebrados, plantas e icnofósseis do Triássico.',extra:'O Serviço Geológico do Brasil registra as coordenadas em WGS84: -29.558000565, -53.448211670.',fonte:'SGB/Geossit e UFSM',lat:-29.558000565,lng:-53.44821167},
+{id:'niemeyer',cat:'fossil',nome:'Sítio Fossilífero Niemeyer — Agudo',titulo:'🦎 Complexo Niemeyer',texto:'Localidade fossilífera de Agudo com uma associação diversificada de vertebrados do Triássico. Em 2025, estudos relataram ali o primeiro registro de allokotossauro para a América do Sul.',extra:'Coordenada publicada para o complexo: 29°40′25″ S; 53°14′4,20″ W.',fonte:'UFSM/CAPPA e literatura científica',lat:-29.6736111,lng:-53.2345},
+{id:'mata',cat:'natureza',nome:'Jardim Paleobotânico — Mata',titulo:'🌲 Jardim Paleobotânico de Mata',texto:'Espaço público de proteção, pesquisa e visitação associado a importantes exemplares de madeiras fossilizadas de Mata.',extra:'O IPHAE informa o endereço Rua Castelo Branco, s/n, Distrito Sede, Mata. Coordenadas publicadas em estudos: aproximadamente 29°33′29″ S; 54°27′41,53″ W.',fonte:'IPHAE/RS e Prefeitura de Mata',lat:-29.5580556,lng:-54.4615361},
+{id:'ale_moa',cat:'fossil',nome:'Sanga da Alemoa — Santa Maria',titulo:'🥇 Sanga da Alemoa',texto:'Sítio histórico da paleontologia de Santa Maria, associado a fósseis triássicos e à história das primeiras pesquisas sobre dinossauros no Brasil.',extra:'Coordenada publicada para a Sanga Alemoa: aproximadamente -29.69777, -53.76944. A área possui proteção e ações de valorização patrimonial.',fonte:'UFSM e referências de localização paleontológica',lat:-29.69777,lng:-53.76944},
+{id:'passo',cat:'fossil',nome:'Passo das Tropas — Santa Maria',titulo:'🌿 Passo das Tropas',texto:'Área de Santa Maria associada a registros e estudos geológicos e paleontológicos, incluindo evidências de ambientes antigos.',extra:'O ponto apresentado no aplicativo é um marcador regional; ele não indica um afloramento privado específico.',fonte:'Município de Santa Maria / UFSM',lat:-29.77572,lng:-53.80648},
+{id:'piche',cat:'fossil',nome:'Afloramento Piche — São João do Polêsine',titulo:'🦴 Afloramento Piche',texto:'Afloramento fossilífero de São João do Polêsine que já forneceu restos de vertebrados triássicos, incluindo elementos de dinossauros e outros grupos.',extra:'Coordenadas publicadas para o afloramento: 29°39′13,84″ S; 53°27′38,36″ W.',fonte:'Literatura científica',lat:-29.6538444,lng:-53.4606556},
+{id:'morro_agudo',cat:'natureza',nome:'Morro de Agudo — Agudo',titulo:'⛰️ Morro de Agudo',texto:'Geomonumento de Agudo que ajuda a compreender a paisagem e a geodiversidade regional. É um marco geomorfológico da Quarta Colônia.',extra:'O SGB registra -29.644460678, -53.273899078 e classifica o local como sítio de geodiversidade de relevância nacional.',fonte:'SGB/Geossit',lat:-29.644460678,lng:-53.273899078}
+];
+const avatars=[['🦕','Dino'],['🦈','Tubarão'],['🐢','Jabuti'],['🦅','Ptero'],['🐊','Croc'],['🦖','Rex']];
+const tipos=[['🐟','Peixe'],['🦷','Dente'],['🐚','Concha'],['🐾','Pegada'],['🌿','Planta'],['🦴','Osso']];
+const avatarList=avatars.map(x=>x[0]);let av=localStorage.qc_avatar||'',niv=localStorage.qc_nivel||'',tipoSel=null,visit=new Set(JSON.parse(localStorage.qc_visit||'[]'));
+const $=id=>document.getElementById(id);
+function toast(x){$('toast').textContent=x;$('toast').style.display='block';clearTimeout(window._t);window._t=setTimeout(()=>$('toast').style.display='none',2400)}
+function esc(s=''){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function ir(id,b){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));$(id).classList.add('active');document.querySelectorAll('nav button').forEach(x=>x.classList.remove('ativo'));b.classList.add('ativo');scrollTo(0,0);if(id==='mapa')renderLocais();if(id==='acervo')renderAcervo();if(id==='missoes')renderMissoes()}
+function avatar(el,x){document.querySelectorAll('#avatars .pick').forEach(p=>p.classList.remove('sel'));el.classList.add('sel');av=x;localStorage.qc_avatar=x;atualiza()}
+function nivelEscolhido(x){niv=x;localStorage.qc_nivel=x;atualiza();toast(x==='mirim'?'🐣 Caça-Fósseis ativado!':'🔬 Acervo Científico Jovem ativado!')}
+function atualiza(){$('status').textContent=(av||'🐣')+' '+(niv==='jovem'?'Acervo Científico Jovem (6º–9º)':'Caça-Fósseis (2º–5º)');$('mirim').style.display=niv==='jovem'?'none':'block';$('jovem').style.display=niv==='jovem'?'block':'none'}
+function ponto(id){const p=locais.find(x=>x.id===id);if(!p)return;visit.add(id);localStorage.qc_visit=JSON.stringify([...visit]);$('info').style.display='block';$('info').innerHTML='<b>'+esc(p.titulo)+'</b><br>'+esc(p.texto)+'<br><i>'+esc(p.extra)+'</i><div class="source">Fonte: '+esc(p.fonte)+'</div>'+(p.lat&&p.lng?'<div class="coords">📍 Coordenadas: '+p.lat.toFixed(5)+', '+p.lng.toFixed(5)+'</div><a class="maps-link" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query='+p.lat+','+p.lng+'">🗺️ Abrir coordenadas no Google Maps</a>':'');verifica()}
+function renderFiltros(){const f=[['todos','Todos'],['fossil','Fósseis'],['museu','Museus/Centros'],['natureza','Natureza']];$('filtros').innerHTML=f.map((x,i)=>`<button class="filter ${i===0?'on':''}" onclick="filtrar('${x[0]}',this)">${x[1]}</button>`).join('')}
+function renderLocais(cat='todos'){$('locais').innerHTML=locais.filter(p=>cat==='todos'||p.cat===cat).map(p=>`<div class="place" onclick="ponto('${p.id}')"><h3>${esc(p.titulo)}</h3><p>${esc(p.texto)}</p><p class="small">${esc(p.nome)}</p></div>`).join('')}
+function filtrar(c,b){document.querySelectorAll('.filter').forEach(x=>x.classList.remove('on'));b.classList.add('on');renderLocais(c)}
+function fotoPreview(e){const f=e.target.files[0];if(!f)return;if(f.size>4*1024*1024){toast('⚠️ Escolha uma foto menor que 4 MB.');e.target.value='';return}const r=new FileReader();r.onload=x=>{$('preview').src=x.target.result;$('preview').style.display='block';$('preview').dataset.src=x.target.result};r.readAsDataURL(f)}
+function tipo(el,x){document.querySelectorAll('#mirim .pick').forEach(p=>p.classList.remove('sel'));el.classList.add('sel');tipoSel=x}
+function getF(){try{return JSON.parse(localStorage.qc_fosseis||'[]')}catch{return[]}}
+function salvar(){if(!niv){toast('⚠️ Escolha seu nível primeiro.');ir('inicio',document.querySelector('nav button'));return}let nome=$('nome').value.trim();if(!nome){toast('⚠️ Dê um apelido à descoberta.');return}if(niv!=='jovem'&&!tipoSel){toast('⚠️ Escolha uma figurinha.');return}let l=getF();l.push({id:Date.now(),nome,local:$('localSelect').value,tipo:niv==='jovem'?($('taxon').value.trim()||'Sem classificação'):tipoSel,periodo:niv==='jovem'?$(`periodo`).value:'',descricao:$('descricao').value.trim(),foto:$('preview').dataset.src||'',data:new Date().toLocaleDateString('pt-BR')});try{localStorage.qc_fosseis=JSON.stringify(l)}catch{toast('⚠️ O armazenamento ficou cheio. Tente apagar fotos antigas.');return}limparForm();toast('🦴 Registro salvo!');verifica()}
+function limparForm(){$('nome').value='';$('descricao').value='';$('taxon').value='';$('foto').value='';$('preview').style.display='none';delete $('preview').dataset.src;tipoSel=null;document.querySelectorAll('#mirim .pick').forEach(p=>p.classList.remove('sel'))}
+function renderAcervo(){let l=getF();$('total').textContent=l.length;$('vazio').style.display=l.length?'none':'block';$('lista').innerHTML=l.slice().reverse().map(f=>`<div class="fossil-card">${f.foto?`<img src="${f.foto}" alt="">`:`<div class="sem-foto">${esc((f.tipo||'🦴').split(' ')[0])}</div>`}<h3>${esc(f.nome)}</h3><p>${esc(f.tipo)}</p><p>📍 ${esc(f.local)} · ${esc(f.data)}</p><button class="btn gray" style="font-size:.7rem;padding:8px" onclick="ficha(${f.id})">🗂️ Ficha</button><button class="del" onclick="apagar(${f.id})" aria-label="Apagar">✕</button></div>`).join('')}
+function apagar(id){if(!confirm('Apagar este registro?'))return;localStorage.qc_fosseis=JSON.stringify(getF().filter(x=>x.id!==id));renderAcervo();verifica()}
+function ficha(id){let f=getF().find(x=>x.id===id);if(!f)return;$('mtitulo').textContent='🗂️ '+f.nome;$('mtexto').innerHTML='<div class="timeline"><div><b>Tipo/Grupo</b><br>'+esc(f.tipo)+'</div>'+(f.periodo?'<div><b>Período</b><br>'+esc(f.periodo)+'</div>':'')+'<div><b>Local</b><br>'+esc(f.local)+'</div><div><b>Data</b><br>'+esc(f.data)+'</div><div><b>Descrição</b><br>'+esc(f.descricao||'—')+'</div></div>';$('modal').style.display='flex'}
+function fechar(){$('modal').style.display='none'}
+const badges=[['b1','🥇','Primeiro registro',l=>l.length>=1],['b2','🗺️','Explorador do território',()=>visit.size>=3],['b3','🧭','Três registros',l=>l.length>=3],['b4','🦅','Olho de Águia',l=>new Set(l.map(x=>x.tipo)).size>=3],['b5','🏛️','Curador Jovem',l=>l.length>=5],['b6','📝','Grande Descrição',l=>l.some(x=>(x.descricao.match(/\S+/g)||[]).length>=20)]];
+function renderMissoes(){let l=getF();$('badges').innerHTML=badges.map(b=>`<div class="badge ${b[3](l)?'ok':''}"><span class="emo">${b[1]}</span><small>${b[2]}</small></div>`).join('');$('m1').textContent=l.length?'✅':'⬜';$('m2').textContent=new Set(l.map(x=>x.tipo)).size>=3?'✅':'⬜';$('m3').textContent=visit.size>=3?'✅':'⬜';$('m4').textContent=l.some(x=>(x.descricao.match(/\S+/g)||[]).length>=20)?'✅':'⬜';let score=Math.min(100,Math.round((Math.min(l.length,5)/5*40)+(Math.min(visit.size,3)/3*30)+(l.some(x=>(x.descricao.match(/\S+/g)||[]).length>=20)?30:0)));$('bar').style.width=score+'%';renderQuiz()}
+
+function atividadeDetetive(){
+ const qs=[['Tenho marcas deixadas por um ser vivo, mas não sou necessariamente o corpo dele. O que sou?','Icnofóssil'],['Posso ser uma parte mineralizada do corpo de um animal. O que posso ser?','Osso ou dente'],['Guardo pistas sobre plantas que viveram em ambientes antigos. O que sou?','Fóssil vegetal']];let i=0;
+ function show(){const q=qs[i];$('mtitulo').textContent='🔎 Detetive do fóssil';$('mtexto').innerHTML='<p style="font-weight:800;font-size:1.05rem">'+q[0]+'</p><button class="btn orange" id="revelar">💡 Revelar resposta</button>';$('modal').style.display='flex';$('revelar').onclick=()=>{$('mtexto').innerHTML='<div class="info"><b>Resposta:</b> '+q[1]+'</div><button class="btn green" id="prox">'+(i+1<qs.length?'Próxima pista':'Concluir')+'</button>';$('prox').onclick=()=>{if(i+1<qs.length){i++;show()}else{fechar();toast('🏆 Detetive concluído!')}}}} show();
+}
+function atividadeTempo(){
+ const items=['Triássico','Jurássico','Cretáceo'];$('mtitulo').textContent='⏳ Linha do tempo';$('mtexto').innerHTML='<p>Qual é a ordem correta, do mais antigo para o mais recente?</p><div id="tempoBtns"></div><p class="small">Escolha uma sequência.</p>';const box=$('tempoBtns');[['Triássico → Jurássico → Cretáceo',true],['Cretáceo → Jurássico → Triássico',false],['Jurássico → Triássico → Cretáceo',false]].forEach(x=>{let b=document.createElement('button');b.className='btn '+(x[1]?'green':'gray');b.textContent=x[0];b.onclick=()=>{toast(x[1]?'✅ Ordem correta!':'❌ Tente novamente.');if(x[1])fechar()};box.appendChild(b)});$('modal').style.display='flex';
+}
+function atividadeCurador(){
+ const l=getF();if(!l.length){$('mtitulo').textContent='🏛️ Curador mirim';$('mtexto').innerHTML='<p>Você ainda não tem descobertas no acervo.</p><button class="btn orange" onclick="fechar();ir(\'registro\',document.querySelectorAll(\'nav button\')[2])">Registrar uma descoberta</button>';$('modal').style.display='flex';return}
+ const f=l[l.length-1];$('mtitulo').textContent='🏛️ Curador mirim';$('mtexto').innerHTML='<div class="info"><b>'+esc(f.nome)+'</b><br>Local: '+esc(f.local)+'<br>Tipo: '+esc(f.tipo)+'</div><p>Imagine que esta descoberta vai para uma pequena exposição. Escreva ou fale para a turma: <b>por que ela merece ser estudada e preservada?</b></p><textarea id="curadorTxt" maxlength="300" placeholder="Minha explicação..."></textarea><button class="btn green" onclick="toast(\'📝 Ficha de curador preparada!\');fechar()">Concluir</button>';$('modal').style.display='flex';
+}
+const quizBanco={
+facil:[
+{q:'Em qual município fica o CAPPA/UFSM?',a:['São João do Polêsine','Agudo','Mata','Ivorá'],c:0,e:'O CAPPA/UFSM está localizado em São João do Polêsine.'},
+{q:'Qual é o principal período geológico associado às rochas fossilíferas destacadas na Quarta Colônia?',a:['Triássico','Jurássico','Cenozoico','Pleistoceno'],c:0,e:'A região é especialmente conhecida pelos registros do Triássico.'},
+{q:'O que é um fóssil?',a:['Evidência preservada de vida do passado','Uma rocha sempre formada por magma','Um animal que ainda vive','Somente uma pegada humana'],c:0,e:'Fóssil é uma evidência preservada de organismos ou de sua atividade no passado.'},
+{q:'O Jardim Paleobotânico de Mata é conhecido principalmente por preservar:',a:['Madeiras fossilizadas','Pegadas de mamíferos atuais','Recifes de coral','Meteoritos'],c:0,e:'O Jardim Paleobotânico protege importantes exemplares de madeira fossilizada.'}
+],
+medio:[
+{q:'Por que a Linha São Luiz é importante para a paleontologia?',a:['Porque reúne diversos registros fósseis do Triássico','Porque é uma mina moderna de carvão','Porque contém apenas fósseis marinhos','Porque foi construída como museu'],c:0,e:'O SGB registra a Linha São Luiz como geossítio fossilífero de relevância nacional, com vários grupos fósseis.'},
+{q:'O que diferencia o CAPPA de um sítio fossilífero?',a:['É um centro de pesquisa, conservação e divulgação','É apenas uma área onde surgem fósseis','É uma estrada estadual','É uma formação rochosa'],c:0,e:'O CAPPA é uma estrutura científica da UFSM voltada à pesquisa, salvaguarda e divulgação.'},
+{q:'O Sítio Buriol, em São João do Polêsine, está associado a qual conjunto de estudos?',a:['Vertebrados do Triássico','Mamíferos marinhos do Cretáceo','Fósseis glaciais do Quaternário','Rochas vulcânicas sem fósseis'],c:0,e:'O Buriol forneceu fósseis de vertebrados triássicos, incluindo Buriolestes.'},
+{q:'Ao clicar em um ponto fossilífero no aplicativo, por que é importante diferenciar coordenada publicada de posição ilustrativa?',a:['Porque nem todo marcador representa um ponto de visitação ou afloramento acessível','Porque todas as coordenadas são secretas','Porque o mapa nunca pode usar coordenadas','Porque municípios não possuem localização'],c:0,e:'Uma coordenada científica pode localizar um afloramento, mas isso não significa que seja um local aberto à visitação.'}
+],
+desafio:[
+{q:'Uma pesquisa cita o afloramento Buriol em 29°39′34,2″ S e 53°25′47,4″ W. O que essa informação representa?',a:['A localização geográfica do afloramento','A idade do fóssil em milhões de anos','A altura do animal encontrado','A espessura da camada fossilífera'],c:0,e:'Latitude e longitude são coordenadas geográficas usadas para localizar um ponto na superfície terrestre.'},
+{q:'O que podemos inferir quando diferentes sítios da Quarta Colônia preservam grupos fósseis variados?',a:['Que os registros ajudam a reconstruir a diversidade dos antigos ecossistemas','Que todos os animais viveram exatamente no mesmo ambiente','Que todos os fósseis têm a mesma idade exata','Que a região era necessariamente marinha'],c:0,e:'Conjuntos fossilíferos diferentes permitem investigar diversidade, ambientes e mudanças ao longo do tempo.'},
+{q:'Por que um mapa paleontológico educativo deve informar quando a posição de um marcador é aproximada?',a:['Para não apresentar uma representação didática como se fosse uma coordenada exata','Para impedir qualquer exploração do conteúdo','Porque mapas não podem mostrar fósseis','Para esconder os municípios'],c:0,e:'Distinguir representação didática de coordenada publicada evita transmitir uma falsa precisão geográfica.'},
+{q:'Qual é a relação entre conservação e pesquisa paleontológica?',a:['A conservação permite que fósseis e informações permaneçam disponíveis para estudos futuros','A conservação impede qualquer estudo científico','Pesquisa e conservação são atividades incompatíveis','Conservar significa retirar todos os fósseis do local'],c:0,e:'A salvaguarda do patrimônio permite que materiais e informações sejam estudados e preservados ao longo do tempo.'}
+]};
+let quizNivel=localStorage.qc_quiz_nivel||'facil',quizAtual=0,quizAcertos=0,quizQuestoes=[];
+function selecionarQuizNivel(n){quizNivel=n;localStorage.qc_quiz_nivel=n;quizAtual=0;quizAcertos=0;quizQuestoes=embaralhar(quizBanco[n]).slice(0,4);renderQuiz();toast(n==='facil'?'🔎 Nível Fácil iniciado!':n==='medio'?'🧭 Nível Médio iniciado!':'🧠 Desafio iniciado!')}
+function embaralhar(arr){return arr.slice().sort(()=>Math.random()-.5)}
+function iniciarQuizSeNecessario(){if(!quizQuestoes.length)quizQuestoes=embaralhar(quizBanco[quizNivel]).slice(0,4)}
+function renderQuiz(){iniciarQuizSeNecessario();['qf','qm','qd'].forEach(id=>$(id).classList.remove('sel'));$('q'+({facil:'f',medio:'m',desafio:'d'}[quizNivel])).classList.add('sel');$('quizScore').textContent=(localStorage.qc_quiz_score||0)+' pontos';$('quizBar').style.width=((quizAtual/quizQuestoes.length)*100)+'%';if(quizAtual>=quizQuestoes.length){$('quizBox').innerHTML='<div class="info"><b>🏆 Rodada concluída!</b><br>Você acertou '+quizAcertos+' de '+quizQuestoes.length+'.<br><button class="btn orange" onclick="reiniciarQuiz()">Jogar novamente</button></div>';return}let q=quizQuestoes[quizAtual];$('quizBox').innerHTML='<p style="font-weight:800">Questão '+(quizAtual+1)+' de '+quizQuestoes.length+' · '+q.q+'</p>'+q.a.map((a,i)=>`<button class="choice" onclick="responderQuiz(this,${i})">${a}</button>`).join('')}
+function responderQuiz(btn,i){let q=quizQuestoes[quizAtual];document.querySelectorAll('.choice').forEach(x=>x.disabled=true);let ok=i===q.c;btn.classList.add(ok?'correct':'wrong');if(!ok)[...document.querySelectorAll('.choice')][q.c].classList.add('correct');if(ok){quizAcertos++;let pontos=quizNivel==='facil'?1:quizNivel==='medio'?2:3;let total=Number(localStorage.qc_quiz_score||0)+pontos;localStorage.qc_quiz_score=total;$('quizScore').textContent=total+' pontos';toast('✅ +'+pontos+' ponto'+(pontos>1?'s':'')+'!')}else toast('❌ Observe a explicação.');setTimeout(()=>{$('quizBox').insertAdjacentHTML('beforeend',`<div class="info"><b>💡 Explicação:</b> ${esc(q.e)}</div><button class="btn green" id="nextQ">Próxima questão</button>`);$('nextQ').onclick=()=>{quizAtual++;renderQuiz()}},220)}
+function reiniciarQuiz(){quizAtual=0;quizAcertos=0;quizQuestoes=embaralhar(quizBanco[quizNivel]).slice(0,4);renderQuiz()}
+let somLigado=localStorage.qc_som!=='0',audioCtx=null;
+function tocarEntrada(){
+  if(!somLigado)return;
+  try{
+    audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
+    audioCtx.resume();
+    const now=audioCtx.currentTime;
+    const notas=[261.63,329.63,392.00,523.25,392.00,329.63,440.00,523.25];
+    notas.forEach((freq,i)=>{
+      const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+      o.type=i%3===0?'triangle':'sine'; o.frequency.value=freq;
+      const t=now+i*.15; g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.055,t+.025);g.gain.exponentialRampToValueAtTime(.0001,t+.13);
+      o.connect(g).connect(audioCtx.destination);o.start(t);o.stop(t+.14);
+    });
+  }catch(e){}
+}
+function toggleSom(e){
+  e.stopPropagation();somLigado=!somLigado;localStorage.qc_som=somLigado?'1':'0';
+  $('soundBtn').textContent=somLigado?'🔊':'🔇';
+  if(somLigado){try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();audioCtx.resume();}catch(e){};tocarEntrada()}
+}
+function entrarApp(){
+  marcarEntrada();tocarEntrada();
+  $('splash').classList.add('hide');
+  setTimeout(()=>$('splash').remove(),750);
+}
+async function instalar(){if(window.deferredPrompt){window.deferredPrompt.prompt();window.deferredPrompt=null}else toast('ℹ️ Use o menu do navegador e escolha “Instalar aplicativo” ou “Adicionar à tela inicial”.')}
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();window.deferredPrompt=e});
+$('soundBtn').textContent=somLigado?'🔊':'🔇';
+$('avatars').innerHTML=avatars.map(x=>`<div class="pick" onclick="avatar(this,'${x[0]}')">${x[0]}<small>${x[1]}</small></div>`).join('');
+$('tipos').innerHTML=tipos.map(x=>`<div class="pick" onclick="tipo(this,'${x[0]} ${x[1]}')">${x[0]}<small>${x[1]}</small></div>`).join('');
+$('localSelect').innerHTML=locais.map(x=>`<option>${esc(x.nome)}</option>`).join('');
+renderFiltros();renderLocais();renderMissoes();if(av){let i=avatarList.indexOf(av);if(i>=0)document.querySelectorAll('#avatars .pick')[i].classList.add('sel')}if(niv)atualiza();
+setTimeout(()=>{ if(localStorage.qc_entrou==='1') entrarApp(); },50);
+$('splash').addEventListener('click',e=>{if(e.target===e.currentTarget)entrarApp()});
+function marcarEntrada(){localStorage.qc_entrou='1'}
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+
+let deferredInstallPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e;const b=document.getElementById('installBtn');if(b)b.style.display='inline-flex';});
+async function instalarApp(){if(!deferredInstallPrompt){toast('Use o menu do navegador e escolha “Instalar aplicativo” ou “Adicionar à tela inicial”.');return;}deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;const b=document.getElementById('installBtn');if(b)b.style.display='none';}
+window.addEventListener('appinstalled',()=>{const b=document.getElementById('installBtn');if(b)b.style.display='none';toast('📲 Aplicativo instalado com sucesso!');});
+</script>
+</body></html>
